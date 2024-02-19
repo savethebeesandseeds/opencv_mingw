@@ -92,7 +92,9 @@ Notice how many of the functionalities have been left outside, this is why i did
 
 > make -j4
 
-### Compile the test code 
+### Compile the test .exe code to run on Windows
+
+> cd /src
 
 > make test
 
