@@ -6,14 +6,15 @@ Compiled in Linux to run on Windows 10 64 bits.
 For 32 bits, just change the ``mingw64_toolchain.cmake`` to ``mingw32_toolchain.cmake`` and use ``i686-w64-mingw32-g++`` instead of  ``x86_64-w64-mingw32-g++`` to compile. 
 
 ## Replication Instructions
-If you're having errors, want some of the missing componets or to follow up the bulding from source, here are dockerized intructions.
 
 ### Create the build docker enviroment
 On your Windows machine install Docker, open CMD and type these commands:
 
+> cd /choose/any/path
+
 > docker pull debian:11
 
-> docker run -it --name=opencv_mingw debian:11
+> docker run -it --name=opencv_mingw  -v .:/output debian:11
 
 > docker exec -it opencv_mingw /bin/sh
 
@@ -30,6 +31,8 @@ Now you are no longer in Windows, but inside a Linux Docker running Debian. Type
 
 
 ### Download mingw-std-threads (as MinGW does not support linux threads)
+
+> cd /external
 
 > git clone https://github.com/meganz/mingw-std-threads
 
@@ -91,4 +94,6 @@ Notice how many of the functionalities have been left outside, this is why i did
 
 ### Compile the test code 
 
-> make main
+> make test
+
+On windows go to /choose/any/path and you'll see the test.exe, that you can no run with double click. 
