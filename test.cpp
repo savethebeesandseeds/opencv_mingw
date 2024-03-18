@@ -1,8 +1,9 @@
+#include <iostream>
 #include <opencv2/opencv.hpp>
 
 int main() {
     /* 1. Load an image */
-    Mat image = cv::imread("example.png"); 
+    cv::Mat image = cv::imread("example.png"); 
 
     /* 2. Check if image loaded successfully */
     if (image.empty()) {

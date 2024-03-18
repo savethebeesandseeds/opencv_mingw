@@ -3,10 +3,10 @@
 # Default parameters
 GCC_PATH=gcc
 MINGW_STD_THREADS_PATH="/external/mingw-std-threads"
-DESTINATION_FOLDER="/external/mingw-std-threads/generated_std_headers"
-INCLUDE_PATHS=()
+INSTALL_PREFIX="/src/build/x86_64-w64-mingw32"
 
-# Create the destination folder
+# Create the destination folder within the install prefix
+DESTINATION_FOLDER="$INSTALL_PREFIX/include"
 mkdir -p "$DESTINATION_FOLDER"
 
 # Retrieve system header search paths
@@ -33,7 +33,8 @@ for header in "${headers[@]}"; do
         std_header_path="$include_path/$header"
         if [ -f "$std_header_path" ]; then
             echo "Found std header: $std_header_path"
-            destination="$DESTINATION_FOLDER/$header"
+            destination="$DESTINATION_FOLDER/$header" 
+            mkdir -p "$(dirname "$destination")" # Ensure parent directory exists
             echo "#pragma once" > "$destination"
             echo "#include \"$std_header_path\"" >> "$destination"
             echo "#include \"$mingw_header_path\"" >> "$destination"

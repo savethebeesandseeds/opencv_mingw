@@ -10,37 +10,36 @@ For 32 bits, just change the ``mingw64_toolchain.cmake`` to ``mingw32_toolchain.
 ### Create the build docker enviroment
 On your Windows machine install Docker, open CMD and type these commands:
 
-> cd /choose/any/path
+> cd /path/to/project
+    
+> git clone https://github.com/savethebeesandseeds/opencv_mingw
+
+> cd /opencv_mingw
 
 > docker pull debian:11
 
-> docker run -it --name=opencv_mingw  -v .:/output debian:11
+> docker run -it --name=opencv_mingw -v .:/src debian:11
 
-> docker exec -it opencv_mingw /bin/sh
+> docker exec -it opencv_mingw /bin/bash
 
 ### Install linux dependencies
 Now you are no longer in Windows, but inside a Linux Docker running Debian. Type these commands.
 
-> apt update && apt install mingw-w64 make cmake g++ git -y
+> apt update && apt install mingw-w64 make cmake g++ git --no-install-recommends -y
+
+> apt install --reinstall ca-certificates --no-install-recommends -y
 
 > mkdir /external && cd /external
 
-### Clone this repository
-
-> git clone https://github.com/savethebeesandseeds/opencv_mingw
-
-
 ### Download mingw-std-threads (as MinGW does not support linux threads)
-
-> cd /external
 
 > git clone https://github.com/meganz/mingw-std-threads
 
-> cp /external/opencv_mingw/resources/generate-std-like-headers.sh /external/mingw-std-threads
+> cp /src/resources/generate-std-like-headers.sh /external/mingw-std-threads/generate-std-like-headers.sh
 
 > cd /external/mingw-std-threads
 
-> chmod +x /external/mingw-std-threads/generate-std-like-headers.sh
+> chmod +x generate-std-like-headers.sh
 
 > ./generate-std-like-headers.sh
 
@@ -54,7 +53,7 @@ Now you are no longer in Windows, but inside a Linux Docker running Debian. Type
 
 Notice how many of the functionalities have been left outside, this is why i didn't distribute the build, I think it might offuscate people. 
 
-> cp /external/opencv_mingw/resources/mingw64_toolchain.cmake /external/opencv
+> cp /src/resources/mingw64_toolchain.cmake /external/opencv
 
 > cd /external/opencv
 
@@ -64,7 +63,7 @@ Notice how many of the functionalities have been left outside, this is why i did
 
 > cmake \
       -DCMAKE_CXX_STANDARD=11 \
-      -DCMAKE_INSTALL_PREFIX=/usr/x86_64-w64-mingw32-g++ \
+      -DCMAKE_INSTALL_PREFIX=/src/build/x86_64-w64-mingw32 \
       -DBUILD_SHARED_LIBS=OFF \
       -DBUILD_opencv_calib3d=OFF \
       -DBUILD_opencv_calib3d=OFF \
@@ -90,12 +89,14 @@ Notice how many of the functionalities have been left outside, this is why i did
       -DCMAKE_TOOLCHAIN_FILE=/external/opencv/mingw64_toolchain.cmake \
       /external/opencv
 
-> make -j4
+> make -j$(nproc)
+
+> make install
 
 ### Compile the test .exe code to run on Windows
 
 > cd /src
 
-> make test
+> make test64
 
-On windows go to /choose/any/path and you'll see the test.exe, that you can no run with double click. 
+On windows go to /path/to/project and you'll see the test.exe, that you can no run with double click. 
